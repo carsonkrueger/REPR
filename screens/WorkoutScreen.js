@@ -53,6 +53,7 @@ const WorkoutScreen = ({ navigation, route }) => {
   // const appState = useRef(AppState.currentState);
   const [workoutName, setWorkoutName] = useState("");
   const [states, setStates] = useState([]);
+  // const [doSearch, setDoSearch] = useState([]);
 
   const originalExercise = useRef([]);
   const prevWeightReps = useRef([]);
@@ -77,6 +78,14 @@ const WorkoutScreen = ({ navigation, route }) => {
       originalExercise.current[topIdx],
     ];
 
+    // swaps doSearch array
+    // let tempDoSearch = [...doSearch];
+    // [tempDoSearch[topIdx], tempDoSearch[topIdx + 1]] = [
+    //   tempDoSearch[topIdx + 1],
+    //   tempDoSearch[topIdx],
+    // ];
+    // setDoSearch(tempDoSearch);
+
     // swaps everything else held in states
     let tempStates = [...states];
     [tempStates[topIdx], tempStates[topIdx + 1]] = [
@@ -86,13 +95,7 @@ const WorkoutScreen = ({ navigation, route }) => {
     setStates(tempStates);
   };
 
-  const findThenSwap = (leadingItem) => {
-    swapExercises(states.findIndex((item) => item === leadingItem));
-  };
-
   const addExercise = () => {
-    let temp = [...states];
-
     prevWeightReps.current.push({
       weights: [""],
       reps: [""],
@@ -100,6 +103,11 @@ const WorkoutScreen = ({ navigation, route }) => {
 
     originalExercise.current.push("");
 
+    // let tempDoSearch = [...doSearch];
+    // tempDoSearch.push(false);
+    // setDoSearch(tempDoSearch);
+
+    let temp = [...states];
     temp.push({
       exercise: "",
       weights: [""],
@@ -121,6 +129,8 @@ const WorkoutScreen = ({ navigation, route }) => {
 
       originalExercise.current = [""];
 
+      setDoSearch([false]);
+
       setStates([
         {
           exercise: "",
@@ -133,6 +143,10 @@ const WorkoutScreen = ({ navigation, route }) => {
     } else {
       prevWeightReps.current.splice(idx, 1);
       originalExercise.current.splice(idx, 1);
+
+      // let tempDoSearch = [...doSearch];
+      // tempDoSearch.splice(idx, 1);
+      // setStates(tempDoSearch);
 
       let temp = [...states];
       temp.splice(idx, 1);
@@ -196,6 +210,12 @@ const WorkoutScreen = ({ navigation, route }) => {
     setIsLocked(!isLocked);
   };
 
+  // const setDoSearchArr = (bool, numExercise) => {
+  //   let tempDoSearch = [...doSearch];
+  //   tempDoSearch[numExercise] = bool;
+  //   setDoSearch(tempDoSearch);
+  // };
+
   const loadWorkoutData = async () => {
     if (WORKOUT_ID.current === null) {
       // create new workout for null id
@@ -233,9 +253,11 @@ const WorkoutScreen = ({ navigation, route }) => {
               tempWorkoutInfo[i].reps = new Array(
                 tempWorkoutInfo[i].reps.length
               ).fill("");
+              // set doSearch list to false
               originalExercise.current.push(tempWorkoutInfo[i].exercise);
             }
             // console.log(prevWeightReps.current);
+            // setDoSearch(new Array(tempWorkoutInfo.length).fill(false));
             setStates(tempWorkoutInfo);
             setWorkoutName(result.rows.item(0).Name);
             setIsLocked(result.rows.item(0).IsLocked);
@@ -527,10 +549,10 @@ const WorkoutScreen = ({ navigation, route }) => {
 
   const styles = StyleSheet.create({
     container: {
-      // Adding justifyContent or alignItems here will cause a bug with scrollView
       backgroundColor: "white", //"#ededed",
       flex: 1,
     },
+
     scrollContainer: {
       paddingBottom: "60%",
     },

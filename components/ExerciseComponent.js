@@ -7,14 +7,13 @@ import {
   StyleSheet,
   TextInput,
   Vibration,
+  TouchableWithoutFeedback,
 } from "react-native";
 
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
-  Easing,
-  withSpring,
   interpolate,
   Extrapolate,
 } from "react-native-reanimated";
@@ -46,9 +45,12 @@ const ExerciseComponent = ({
   setReps,
   isLocked,
   originalExercise,
+  // doSearch,
+  // setDoSearchArr,
 }) => {
   const [doTimer, setDoTimer] = useState(false);
   const [doNotes, setDoNotes] = useState(false);
+  const [doSearch, setDoSearch] = useState();
 
   const countdownTime = useRef(new Date().getTime());
   const originalName = useRef();
@@ -57,6 +59,9 @@ const ExerciseComponent = ({
   const intervalId = useRef();
 
   const height = useSharedValue(0);
+  const titleHeight = useRef(0);
+
+  const TWENTHYTH_SECOND = 50;
 
   const flipDoTimer = () => {
     // console.log("FLIP! doTimer:", doTimer);
@@ -66,6 +71,7 @@ const ExerciseComponent = ({
   };
 
   const flipDoNotes = () => {
+    Vibration.vibrate(TWENTHYTH_SECOND);
     setDoNotes(!doNotes);
   };
 
@@ -147,6 +153,15 @@ const ExerciseComponent = ({
       backgroundColor: "white",
       // paddingBottom: isLocked ? "4%" : "0%",
     },
+    touchOffSearch: {
+      // backgroundColor: "orange",
+      position: "absolute",
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+      zIndex: 1,
+    },
     titleContainer: {
       flex: 1,
       flexDirection: "row",
@@ -160,6 +175,7 @@ const ExerciseComponent = ({
       color: "#2494f0",
       paddingLeft: 16,
       textAlign: "left",
+      zIndex: 2,
     },
     timerContainer: {
       marginVertical: ".7%",
@@ -254,6 +270,23 @@ const ExerciseComponent = ({
 
   return (
     <View style={styles.container}>
+      {doSearch && (
+        <TouchableWithoutFeedback onPress={() => setDoSearch(false)}>
+          <View style={styles.touchOffSearch}></View>
+        </TouchableWithoutFeedback>
+      )}
+
+      {doSearch && (
+        <SearchComponent
+          exercise={workoutInfo.exercise}
+          setExercise={setExercise}
+          doSearch={doSearch}
+          setDoSearch={setDoSearch}
+          numExercise={numExercise}
+          titleHeight={titleHeight.current}
+        />
+      )}
+
       <NotesComponent
         doNotes={doNotes}
         flipDoNotes={flipDoNotes}
@@ -262,7 +295,12 @@ const ExerciseComponent = ({
         numExercise={numExercise}
       />
 
-      <View style={styles.titleContainer}>
+      <View
+        style={styles.titleContainer}
+        onLayout={(event) => {
+          titleHeight.current = event.nativeEvent.layout.height;
+        }}
+      >
         <TextInput
           style={styles.titleText}
           placeholder="EXERCISE NAME"
@@ -276,7 +314,8 @@ const ExerciseComponent = ({
             setExercise(newText, numExercise);
           }}
           maxLength={35}
-          // onEndEditing={updatePrevName}
+          onPressIn={() => setDoSearch(true)}
+          // onPressOut={() => setDoSearch(false)}
         />
 
         <TouchableOpacity style={styles.notesButton} onPress={flipDoNotes}>
@@ -322,8 +361,6 @@ const ExerciseComponent = ({
           </View>
         )}
       </View>
-
-      <SearchComponent exercise={workoutInfo.exercise} />
 
       <View style={styles.headers}>
         <View style={styles.setHead}>

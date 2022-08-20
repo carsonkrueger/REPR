@@ -1,13 +1,12 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import React, {
   StyleSheet,
   View,
   Text,
   TouchableOpacity,
   Alert,
+  Vibration,
 } from "react-native";
-
-import * as SQLite from "expo-sqlite";
 
 const BackComponent = ({
   saveNewData,
@@ -15,9 +14,10 @@ const BackComponent = ({
   savePrevData,
   workoutName,
   id,
-  navigation,
   isTemplate,
 }) => {
+  const TWENTHYTH_SECOND = useRef(50);
+
   const isWorkoutUnique = () => {
     // console.log(templateNames);
     if (workoutName == null || workoutName.trim() === "") {
@@ -45,6 +45,7 @@ const BackComponent = ({
       <TouchableOpacity
         onPress={async () => {
           if (isWorkoutUnique()) {
+            Vibration.vibrate(TWENTHYTH_SECOND.current);
             id == null || isTemplate ? saveNewData() : updateData();
             await savePrevData();
           }

@@ -1,22 +1,48 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
-  FlatList,
+  Vibration,
   // AppState,
 } from "react-native";
+
+// import Animated, {
+//   useAnimatedStyle,
+//   useSharedValue,
+//   withTiming,
+//   interpolate,
+//   Extrapolate,
+// } from "react-native-reanimated";
 
 import * as SQLite from "expo-sqlite";
 
 const db = SQLite.openDatabase("GymTracker");
 
-const SearchComponent = ({ exercise }) => {
+const SearchComponent = ({
+  exercise,
+  setExercise,
+  doSearch,
+  setDoSearch,
+  numExercise,
+  titleHeight,
+}) => {
   //   console.log(exercise);
   const [searchList, setSearchList] = useState([]);
+
   const SEARCH_LIMIT = 5;
+  const TWENTHYTH_SECOND = 50;
+
+  // const searchBoxHeight = useRef(0);
+  // const animHeight = useSharedValue(0);
+
+  const onSearchItemPress = (item) => {
+    Vibration.vibrate(TWENTHYTH_SECOND);
+    setExercise(item, numExercise);
+    setDoSearch(false);
+  };
 
   const loadSearchList = () => {
     db.transaction((tx) =>
@@ -30,40 +56,73 @@ const SearchComponent = ({ exercise }) => {
             tempSearchList.push(result.rows.item(i).Name);
           }
           setSearchList(tempSearchList);
-          console.log(tempSearchList);
+          // console.log(tempSearchList);
         },
         (tx, err) => console.log("ERROR LOADING SEARCH LIST", err)
       )
     );
   };
 
+  // const handleHeightAnim = () => {
+  //   "worklet";
+  //   animHeight.value = withTiming(searchBoxHeight.current);
+  // };
+
+  // const heightAnimStyle = useAnimatedStyle(() => {
+  //   return {
+  //     height: withTiming(searchBoxHeight.current, {
+  //       duration: 300,
+  //     }),
+  //   };
+  // });
+
   useEffect(() => {
-    loadSearchList();
-  }, [exercise]);
+    // assign search list
+    if (doSearch) loadSearchList();
+    // clear search list
+    else setSearchList([]);
+  }, [exercise, doSearch]);
 
   const styles = StyleSheet.create({
     container: {
+      backgroundColor: "white",
       position: "absolute",
+      zIndex: 2,
+      marginTop: titleHeight + 3,
+      marginLeft: 12,
+      padding: 3,
+      borderRadius: 5,
+      borderWidth: searchList.length <= 0 ? 0 : 1,
+      borderColor: "#bdbdbd",
     },
     searchItemContainer: {
-      backgroundColor: "white",
+      paddingVertical: 2,
     },
     searchItemText: {
       color: "#2494f0",
+      fontFamily: "RobotoCondensedRegular",
+      fontSize: 16,
     },
   });
 
   return (
-    <FlatList
-      contentContainerStyle={styles.container}
-      data={searchList}
-      renderItem={({ item, index }) => {
-        <TouchableOpacity style={styles.searchItemContainer}>
+    <View
+      style={[styles.container]}
+      // onLayout={(event) => {
+      //   searchBoxHeight.current = event.nativeEvent.layout.height;
+      //   console.log(event.nativeEvent.layout.height);
+      // }}
+    >
+      {searchList.map((item, index) => (
+        <TouchableOpacity
+          key={index}
+          style={styles.searchItemContainer}
+          onPress={() => onSearchItemPress(item)}
+        >
           <Text style={styles.searchItemText}>{item}</Text>
-        </TouchableOpacity>;
-      }}
-      ListEmptyComponent={<Text>EMPTY LIST</Text>}
-    />
+        </TouchableOpacity>
+      ))}
+    </View>
   );
 };
 
