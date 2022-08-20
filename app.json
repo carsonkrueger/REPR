@@ -28,7 +28,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.crkruege00.REPR",
-      "versionCode": 11
+      "versionCode": 12
     },
     "web": {
       "favicon": "./assets/weight_1.png"
