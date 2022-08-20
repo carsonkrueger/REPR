@@ -22,7 +22,8 @@ import Animated, {
 import { MaterialIcons, SimpleLineIcons, Feather } from "@expo/vector-icons";
 
 import SetComponent from "./SetComponent";
-import NotesComponent from "../components/NotesComponent";
+import NotesComponent from "./NotesComponent";
+import SearchComponent from "./SearchComponent";
 
 import * as SQLite from "expo-sqlite";
 
@@ -321,6 +322,8 @@ const ExerciseComponent = ({
           </View>
         )}
       </View>
+
+      <SearchComponent exercise={workoutInfo.exercise} />
 
       <View style={styles.headers}>
         <View style={styles.setHead}>
