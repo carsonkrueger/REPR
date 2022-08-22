@@ -315,7 +315,7 @@ const ExerciseComponent = ({
           }}
           maxLength={35}
           onPressIn={() => setDoSearch(true)}
-          // onPressOut={() => setDoSearch(false)}
+          // onEndEditing={() => setDoSearch(false)}
         />
 
         <TouchableOpacity style={styles.notesButton} onPress={flipDoNotes}>

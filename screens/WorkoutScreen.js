@@ -630,6 +630,7 @@ const WorkoutScreen = ({ navigation, route }) => {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
+        keyboardShouldPersistTaps="always"
         stickyHeaderIndices={[0]}
         contentContainerStyle={styles.scrollContainer}
         data={states}
