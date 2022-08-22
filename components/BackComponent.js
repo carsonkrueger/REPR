@@ -45,7 +45,6 @@ const BackComponent = ({
       <TouchableOpacity
         onPress={async () => {
           if (isWorkoutUnique()) {
-            Vibration.vibrate(TWENTHYTH_SECOND.current);
             id == null || isTemplate ? saveNewData() : updateData();
             await savePrevData();
           }

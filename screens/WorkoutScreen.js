@@ -8,6 +8,7 @@ import {
   TextInput,
   SafeAreaView,
   FlatList,
+  Vibration,
   // AppState,
 } from "react-native";
 
@@ -64,6 +65,8 @@ const WorkoutScreen = ({ navigation, route }) => {
   const date = useRef(new Date());
 
   const height = useSharedValue(0);
+
+  const VIBRATE_MS = useRef(30);
 
   const swapExercises = (topIdx) => {
     // swaps prev weights & reps
@@ -173,6 +176,8 @@ const WorkoutScreen = ({ navigation, route }) => {
   };
 
   const addSet = (numExercise) => {
+    Vibration.vibrate(VIBRATE_MS.current);
+
     let temp = [...states];
 
     temp[numExercise].weights.push("");
@@ -181,6 +186,8 @@ const WorkoutScreen = ({ navigation, route }) => {
   };
 
   const deleteSet = (numExercise) => {
+    Vibration.vibrate(VIBRATE_MS.current);
+
     let temp = [...states];
 
     if (temp[numExercise].weights.length <= 1) {
@@ -482,6 +489,7 @@ const WorkoutScreen = ({ navigation, route }) => {
   // const handleTrash
 
   useEffect(() => {
+    Vibration.vibrate(VIBRATE_MS.current);
     handleAnim();
   }, [isLocked]);
 

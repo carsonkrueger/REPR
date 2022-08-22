@@ -61,7 +61,7 @@ const ExerciseComponent = ({
   const height = useSharedValue(0);
   const titleHeight = useRef(0);
 
-  const TWENTHYTH_SECOND = 50;
+  const VIBRATE_MS = useRef(30);
 
   const flipDoTimer = () => {
     // console.log("FLIP! doTimer:", doTimer);
@@ -71,7 +71,7 @@ const ExerciseComponent = ({
   };
 
   const flipDoNotes = () => {
-    Vibration.vibrate(TWENTHYTH_SECOND);
+    Vibration.vibrate(VIBRATE_MS.current);
     setDoNotes(!doNotes);
   };
 
