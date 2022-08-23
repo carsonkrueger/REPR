@@ -4,7 +4,7 @@
   },
   "build": {
     "development": {
-      "distribution": "internal",
+      "distribution": "production",
       "android": {
         "gradleCommand": ":app:assembleDebug"
       },
@@ -13,7 +13,7 @@
       }
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "production"
     },
     "production": {}
   },

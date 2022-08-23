@@ -64,7 +64,8 @@ const WorkoutScreen = ({ navigation, route }) => {
 
   const date = useRef(new Date());
 
-  const height = useSharedValue(0);
+  const lockAnimValue = useSharedValue(0);
+  const swapAnimValue = useSharedValue(0);
 
   const VIBRATE_MS = useRef(30);
 
@@ -214,6 +215,7 @@ const WorkoutScreen = ({ navigation, route }) => {
   };
 
   const switchLock = () => {
+    Vibration.vibrate(VIBRATE_MS.current);
     setIsLocked(!isLocked);
   };
 
@@ -474,28 +476,33 @@ const WorkoutScreen = ({ navigation, route }) => {
     );
   }
 
-  const handleAnim = () => {
+  const handleLockAnim = () => {
     "worklet";
     const toValue = isLocked ? 0 : 100;
-    height.value = withTiming(toValue);
+    lockAnimValue.value = withTiming(toValue);
   };
 
   const swapHeightAnimStyle = useAnimatedStyle(() => {
     return {
-      height: interpolate(height.value, [0, 100], [0, 25], Extrapolate.CLAMP),
+      height: interpolate(
+        lockAnimValue.value,
+        [0, 100],
+        [0, 25],
+        Extrapolate.CLAMP
+      ),
     };
   });
 
   // const handleTrash
 
   useEffect(() => {
-    Vibration.vibrate(VIBRATE_MS.current);
-    handleAnim();
+    handleLockAnim();
   }, [isLocked]);
 
   // on mount
   useEffect(() => {
     // SplashScreen.preventAutoHideAsync();
+    Vibration.vibrate(VIBRATE_MS.current);
 
     WORKOUT_ID.current = route.params.id;
     route.params.isTemplate ? loadTemplateData() : loadWorkoutData();
@@ -733,7 +740,7 @@ const WorkoutScreen = ({ navigation, route }) => {
       <AdMobBanner
         // style={styles.bottomBanner}
         bannerSize="smartBannerPortrait"
-        adUnitID="ca-app-pub-3940256099942544/6300978111" //"ca-app-pub-8357822625939612/5770780706" // Test ID, Replace with your-admob-unit-id
+        adUnitID="ca-app-pub-8357822625939612/5770780706" //"ca-app-pub-3940256099942544/6300978111" // Test ID, Replace with your-admob-unit-id
         servePersonalizedAds={true} // true or false
         // testID={"device"}
         onDidFailToReceiveAdWithError={(e) =>
