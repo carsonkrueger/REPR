@@ -11,6 +11,8 @@ import {
   StatusBar,
 } from "react-native";
 
+setTestDeviceIDAsync("EMULATOR");
+
 import WorkoutComponent from "../components/WorkoutComponent";
 import TemplateComponent from "../components/templateComponent";
 
@@ -21,6 +23,7 @@ import { useFonts } from "expo-font";
 import { AdMobBanner, setTestDeviceIDAsync } from "expo-ads-admob";
 
 // setTestDeviceIDAsync("device");
+setTestDeviceIDAsync("EMULATOR");
 
 const db = SQLite.openDatabase("GymTracker");
 
@@ -390,7 +393,8 @@ const HomeScreen = ({ navigation }) => {
       <AdMobBanner
         style={styles.bottomBanner}
         bannerSize="smartBannerPortrait"
-        adUnitID="ca-app-pub-8357822625939612/6897489102" //"ca-app-pub-3940256099942544/6300978111" // Test ID, Replace with your-admob-unit-id
+        // real ad: ca-app-pub-8357822625939612/6897489102
+        adUnitID="ca-app-pub-3940256099942544/6300978111" //"ca-app-pub-8357822625939612/6897489102" // Test ID, Replace with your-admob-unit-id
         servePersonalizedAds={true} // true or false
         // testID={"device"}
         onDidFailToReceiveAdWithError={(e) =>

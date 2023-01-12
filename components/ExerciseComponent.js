@@ -319,7 +319,11 @@ const ExerciseComponent = ({
         />
 
         <TouchableOpacity style={styles.notesButton} onPress={flipDoNotes}>
-          <SimpleLineIcons name="notebook" size={20} color={"#2494f0"} />
+          <SimpleLineIcons
+            name="notebook"
+            size={20}
+            color={workoutInfo.notes ? "#2494f0" : "#9fcaed"}
+          />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.timerContainer} onPress={flipDoTimer}>
