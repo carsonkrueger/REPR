@@ -48,14 +48,14 @@ const PrevScreen = ({ navigation, route }) => {
   ]);
 
   const getDates = (lastPerformed) => {
-    const [monthInt, dayInt] = lastPerformed.split("-");
+    const [monthInt, dayInt, yearInt] = lastPerformed.split("-");
 
-    if (curMonth.current !== months.current[monthInt - 1]) {
-      curMonth.current = months.current[monthInt - 1];
-      return { month: months.current[monthInt - 1], day: dayInt };
+    if (curMonth.current !== months.current[monthInt]) {
+      curMonth.current = months.current[monthInt];
+      return { month: months.current[monthInt], day: dayInt };
     }
 
-    return { month: "", day: dayInt };
+    return { month: "", day: dayInt, year: yearInt };
   };
 
   const loadData = () => {

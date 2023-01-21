@@ -348,7 +348,11 @@ const WorkoutScreen = ({ navigation, route }) => {
             workoutName,
             JSON.stringify(states),
             isLocked,
-            date.current.getMonth() + "-" + date.current.getDate(),
+            date.current.getMonth() +
+              "-" +
+              date.current.getDate() +
+              "-" +
+              date.current.getFullYear(),
           ],
           (tx, result) => {
             // sets workout id for templates so prev data gets saved with same workout id
@@ -400,7 +404,11 @@ const WorkoutScreen = ({ navigation, route }) => {
                 states[i].exercise,
                 JSON.stringify(states[i].weights),
                 JSON.stringify(states[i].reps),
-                date.current.getMonth() + "-" + date.current.getDate(),
+                date.current.getMonth() +
+                  "-" +
+                  date.current.getDate() +
+                  "-" +
+                  date.current.getFullYear(),
               ],
               null,
               (tx, error) => console.log("ERROR", error)
@@ -564,10 +572,9 @@ const WorkoutScreen = ({ navigation, route }) => {
 
   const styles = StyleSheet.create({
     container: {
-      backgroundColor: "white", //"#ededed",
+      backgroundColor: "#f0f0f0",
       flex: 1,
     },
-
     scrollContainer: {
       paddingBottom: "60%",
     },
@@ -634,11 +641,16 @@ const WorkoutScreen = ({ navigation, route }) => {
       color: "white",
     },
     cancel: {
-      color: "red",
+      color: "white",
+      backgroundColor: "#f53848",
       fontFamily: "RobotoCondensedLight",
       fontSize: 20,
       textAlign: "center",
-      paddingTop: isLocked ? "5%" : null,
+      alignItems: "center",
+      marginTop: isLocked ? "5%" : null,
+      marginHorizontal: "20%",
+      padding: "1%",
+      borderRadius: 10,
     },
   });
 

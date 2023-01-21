@@ -19,7 +19,7 @@ const SetComponent = ({
   prevRep,
   setReps,
 }) => {
-  const TWENTYTH_SECOND_MS = 50;
+  const VIBRATE_MS = 10;
   const [isDone, setIsDone] = useState(false);
 
   useEffect(() => {
@@ -164,7 +164,7 @@ const SetComponent = ({
           style={styles.checkButton}
           onPress={() => {
             setIsDone(!isDone);
-            Vibration.vibrate(TWENTYTH_SECOND_MS);
+            Vibration.vibrate(VIBRATE_MS);
           }}
         >
           <Feather name="check" size={25} color={"white"} />

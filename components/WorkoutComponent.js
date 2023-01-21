@@ -31,8 +31,11 @@ const WorkoutComponent = ({
   workoutInfo,
   setForceUpdate,
 }) => {
-  const windowWidth = useRef(Dimensions.get("window").width);
+  // const windowWidth = useRef(Dimensions.get("window").width);
   // const translation = useRef(new Animated.Value(0)).current;
+  const [monthInt, dayInt, yearInt] = lastPerformed
+    .split("-")
+    .map((e) => parseInt(e));
   const translation = useSharedValue(0);
   const [isTranslated, setIsTranslated] = useState(false);
 
@@ -170,7 +173,9 @@ const WorkoutComponent = ({
         >
           <View style={styles.left}>
             <Text style={styles.title}>{name}</Text>
-            <Text style={styles.date}>LAST PERFORMED: {lastPerformed}</Text>
+            <Text style={styles.date}>
+              LAST PERFORMED: {monthInt + 1}-{dayInt}
+            </Text>
           </View>
           <View style={styles.right}>
             {workoutInfo.map((exer, i) =>
