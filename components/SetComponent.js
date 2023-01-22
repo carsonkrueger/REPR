@@ -130,6 +130,7 @@ const SetComponent = ({
           keyboardType="number-pad"
           value={weights[numSet]}
           placeholder={prevWeight}
+          placeholderTextColor={"#b8b8b8"}
           editable={!isDone} //isDoneArr[numExercise][numSet]}
           maxLength={4}
           onChangeText={(newText) => {
@@ -148,6 +149,7 @@ const SetComponent = ({
           keyboardType="number-pad" /*editable={() => isDone ? false : true}*/
           value={reps[numSet]}
           placeholder={prevRep}
+          placeholderTextColor={"#b8b8b8"}
           editable={!isDone} //isDoneArr[numExercise][numSet]}
           maxLength={4}
           onChangeText={(newText) => {

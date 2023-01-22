@@ -9,6 +9,8 @@ import {
   SafeAreaView,
   FlatList,
   Vibration,
+  BackHandler,
+  Alert,
   // AppState,
 } from "react-native";
 
@@ -343,16 +345,13 @@ const WorkoutScreen = ({ navigation, route }) => {
       // savePrevData();
       await db.transaction(async (tx) => {
         await tx.executeSql(
-          "INSERT INTO Workouts (Name, WorkoutInfo, IsLocked, LastPerformed) VALUES (?,?,?,?);",
+          "INSERT INTO Workouts (Name, WorkoutInfo, IsLocked, LastPerformed, Year) VALUES (?,?,?,?,?);",
           [
             workoutName,
             JSON.stringify(states),
             isLocked,
-            date.current.getMonth() +
-              "-" +
-              date.current.getDate() +
-              "-" +
-              date.current.getFullYear(),
+            date.current.getMonth() + "-" + date.current.getDate(),
+            date.current.getFullYear(),
           ],
           (tx, result) => {
             // sets workout id for templates so prev data gets saved with same workout id
@@ -373,12 +372,13 @@ const WorkoutScreen = ({ navigation, route }) => {
       // savePrevData();
       await db.transaction(async (tx) => {
         await tx.executeSql(
-          "UPDATE Workouts SET Name = ?, WorkoutInfo = ?, IsLocked = ?, LastPerformed = ? WHERE ID = ?",
+          "UPDATE Workouts SET Name = ?, WorkoutInfo = ?, IsLocked = ?, LastPerformed = ?, Year = ?, WHERE ID = ?",
           [
             workoutName,
             JSON.stringify(states),
             isLocked,
             date.current.getMonth() + "-" + date.current.getDate(),
+            date.current.getFullYear(),
             WORKOUT_ID.current,
           ],
           // null,
@@ -398,17 +398,14 @@ const WorkoutScreen = ({ navigation, route }) => {
         await db.transaction(
           async (tx) =>
             await tx.executeSql(
-              "INSERT INTO Prevs (ID, Name, Weights, Reps, LastPerformed) VALUES (?,?,?,?,?);",
+              "INSERT INTO Prevs (ID, Name, Weights, Reps, LastPerformed, Year) VALUES (?,?,?,?,?,?);",
               [
                 WORKOUT_ID.current,
                 states[i].exercise,
                 JSON.stringify(states[i].weights),
                 JSON.stringify(states[i].reps),
-                date.current.getMonth() +
-                  "-" +
-                  date.current.getDate() +
-                  "-" +
-                  date.current.getFullYear(),
+                date.current.getMonth() + "-" + date.current.getDate(),
+                date.current.getFullYear(),
               ],
               null,
               (tx, error) => console.log("ERROR", error)
@@ -501,6 +498,14 @@ const WorkoutScreen = ({ navigation, route }) => {
     };
   });
 
+  const onBackButton = () => {
+    Alert.alert(
+      "Hold on!",
+      "Are you sure you want to go back? All workout progress will be lost.",
+      [{ text: "Cancel" }, { text: "YES" }]
+    );
+  };
+
   // const handleTrash
 
   useEffect(() => {
@@ -510,10 +515,13 @@ const WorkoutScreen = ({ navigation, route }) => {
   // on mount
   useEffect(() => {
     // SplashScreen.preventAutoHideAsync();
+    // printPrevData();
     Vibration.vibrate(VIBRATE_MS.current);
 
     WORKOUT_ID.current = route.params.id;
     route.params.isTemplate ? loadTemplateData() : loadWorkoutData();
+
+    BackHandler.addEventListener("hardwareBackPress", onBackButton);
 
     // Managing app state (foregrounded/backgrounded) for expo notifications
     // const notificationSubscription = Notifications.addPushTokenListener(
@@ -540,6 +548,7 @@ const WorkoutScreen = ({ navigation, route }) => {
     // );
 
     return () => {
+      BackHandler.removeEventListener("hardwareBackPress", onBackButton);
       // appStateSubscription.remove();
       // notificationSubscription.remove();
       // Notifications.cancelAllScheduledNotificationsAsync(
@@ -572,30 +581,40 @@ const WorkoutScreen = ({ navigation, route }) => {
 
   const styles = StyleSheet.create({
     container: {
-      backgroundColor: "#f0f0f0",
+      backgroundColor: "#f2f2f2",
       flex: 1,
+      // alignItems: "center",
     },
     scrollContainer: {
       paddingBottom: "60%",
+      // justifyContent: "center",
     },
     screenHeader: {
+      maxWidth: 500,
       flex: 1,
       marginTop: "5%",
       marginBottom: "3%",
       marginHorizontal: "4%",
-      paddingVertical: "3%",
+      paddingVertical: 8,
       borderRadius: 10,
       flexDirection: "row",
+      alignItems: "center",
+      alignSelf: "center",
       backgroundColor: "#2494f0",
     },
     screenTitleContainer: {
       flex: 6,
+      justifyContent: "center",
     },
     screenTitleText: {
       fontFamily: "RobotoCondensedRegular",
-      marginLeft: "7%",
+      marginLeft: 8,
       fontSize: 18,
       color: "white", //"#2494f0",
+      backgroundColor: isLocked ? null : "#1e7cc9",
+      paddingHorizontal: 8,
+      paddingVertical: 5,
+      borderRadius: 5,
     },
     backContainer: {
       flex: 1.8,
@@ -646,11 +665,13 @@ const WorkoutScreen = ({ navigation, route }) => {
       fontFamily: "RobotoCondensedLight",
       fontSize: 20,
       textAlign: "center",
-      alignItems: "center",
+      // alignItems: "center",
+      alignSelf: "center",
       marginTop: isLocked ? "5%" : null,
-      marginHorizontal: "20%",
-      padding: "1%",
-      borderRadius: 10,
+      // maxWidth: 250,
+      padding: 5,
+      paddingHorizontal: 20,
+      borderRadius: 8,
     },
   });
 
@@ -662,41 +683,39 @@ const WorkoutScreen = ({ navigation, route }) => {
         contentContainerStyle={styles.scrollContainer}
         data={states}
         ListHeaderComponent={
-          <View>
-            <View style={styles.screenHeader}>
-              <View style={styles.screenTitleContainer}>
-                <TextInput
-                  style={styles.screenTitleText}
-                  placeholder="WORKOUT NAME"
-                  placeholderTextColor="#90c6f5"
-                  onChangeText={(newText) => setWorkoutName(newText)}
-                  autoCapitalize="characters"
-                  value={workoutName}
-                  editable={!isLocked}
-                ></TextInput>
-              </View>
+          <View style={styles.screenHeader}>
+            <View style={styles.screenTitleContainer}>
+              <TextInput
+                style={styles.screenTitleText}
+                placeholder="WORKOUT NAME"
+                placeholderTextColor="#90c6f5"
+                onChangeText={(newText) => setWorkoutName(newText)}
+                autoCapitalize="characters"
+                value={workoutName}
+                editable={!isLocked}
+              ></TextInput>
+            </View>
 
-              <View style={styles.backContainer}>
-                <BackComponent
-                  navigation={navigation}
-                  saveNewData={saveNewData}
-                  updateData={updateData}
-                  savePrevData={savePrevData}
-                  workoutName={workoutName}
-                  id={WORKOUT_ID.current}
-                  isTemplate={route.params.isTemplate}
+            <View style={styles.backContainer}>
+              <BackComponent
+                navigation={navigation}
+                saveNewData={saveNewData}
+                updateData={updateData}
+                savePrevData={savePrevData}
+                workoutName={workoutName}
+                id={WORKOUT_ID.current}
+                isTemplate={route.params.isTemplate}
+              />
+            </View>
+
+            <View style={styles.lockContainer}>
+              <TouchableOpacity onPress={switchLock}>
+                <Feather
+                  name={isLocked ? "lock" : "unlock"}
+                  color="white"
+                  size={24}
                 />
-              </View>
-
-              <View style={styles.lockContainer}>
-                <TouchableOpacity onPress={switchLock}>
-                  <Feather
-                    name={isLocked ? "lock" : "unlock"}
-                    color="white"
-                    size={24}
-                  />
-                </TouchableOpacity>
-              </View>
+              </TouchableOpacity>
             </View>
           </View>
         }

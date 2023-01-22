@@ -48,14 +48,14 @@ const PrevScreen = ({ navigation, route }) => {
   ]);
 
   const getDates = (lastPerformed) => {
-    const [monthInt, dayInt, yearInt] = lastPerformed.split("-");
+    const [monthInt, dayInt] = lastPerformed.split("-");
 
     if (curMonth.current !== months.current[monthInt]) {
       curMonth.current = months.current[monthInt];
       return { month: months.current[monthInt], day: dayInt };
     }
 
-    return { month: "", day: dayInt, year: yearInt };
+    return { month: "", day: dayInt };
   };
 
   const loadData = () => {
@@ -69,7 +69,7 @@ const PrevScreen = ({ navigation, route }) => {
       db.transaction((tx) =>
         tx.executeSql(
           // (ID, Name, Weights, Reps, LastPerformed)
-          "SELECT * FROM Prevs WHERE Name = ? AND ID = ? ORDER BY LastPerformed DESC LIMIT ? OFFSET ?",
+          "SELECT * FROM Prevs WHERE Name = ? AND ID = ? ORDER BY Year, LastPerformed DESC LIMIT ? OFFSET ?",
           [
             route.params.originalExercise,
             route.params.WORKOUT_ID,

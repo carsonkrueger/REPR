@@ -61,7 +61,7 @@ const ExerciseComponent = ({
   const height = useSharedValue(0);
   const titleHeight = useRef(0);
 
-  const VIBRATE_MS = useRef(30);
+  const VIBRATE_MS = useRef(10);
 
   const flipDoTimer = () => {
     // console.log("FLIP! doTimer:", doTimer);
@@ -71,7 +71,7 @@ const ExerciseComponent = ({
   };
 
   const flipDoNotes = () => {
-    Vibration.vibrate(VIBRATE_MS.current);
+    // Vibration.vibrate(VIBRATE_MS.current);
     setDoNotes(!doNotes);
   };
 
@@ -100,7 +100,7 @@ const ExerciseComponent = ({
 
   const handleHeightAnim = () => {
     "worklet";
-    const toValue = isLocked ? 0 : 100;
+    const toValue = isLocked ? 0 : 50;
     height.value = withTiming(toValue);
   };
 
@@ -144,12 +144,14 @@ const ExerciseComponent = ({
 
   const styles = StyleSheet.create({
     container: {
+      maxWidth: 650,
+      alignSelf: "center",
       flex: 1,
       margin: "2%",
       borderColor: "white",
       borderWidth: 1,
       borderRadius: 15,
-      paddingTop: "5%",
+      paddingVertical: 15,
       backgroundColor: "white",
       // paddingBottom: isLocked ? "4%" : "0%",
     },
@@ -171,15 +173,19 @@ const ExerciseComponent = ({
       fontFamily: "RobotoCondensedRegular",
       flex: 22,
       fontSize: 16,
-      // fontFamily: "Bebas Neue",
+      // backgroundColor: isLocked ? null : "#f2f2f2",
+      borderRadius: 10,
       color: "#2494f0",
-      paddingLeft: 16,
+      paddingLeft: "5%",
       textAlign: "left",
       zIndex: 2,
     },
     timerContainer: {
-      marginVertical: ".7%",
-      paddingVertical: ".3%",
+      // marginVertical: ".7%",
+      // paddingVertical: ".3%",
+      marginVertical: 3,
+      paddingVertical: 2,
+      maxWidth: 80,
       flex: isLocked ? 7 : 9,
       marginRight: isLocked ? "4%" : 0,
       alignItems: "center",
@@ -262,8 +268,7 @@ const ExerciseComponent = ({
     },
     addDelSetContainer: {
       flexDirection: "row",
-      paddingVertical: "2%",
-      alignItems: "center",
+      marginTop: 8,
       justifyContent: "space-evenly",
     },
   });

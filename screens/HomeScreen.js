@@ -11,6 +11,8 @@ import {
   StatusBar,
 } from "react-native";
 
+// import expo from "../app.json";
+
 setTestDeviceIDAsync("EMULATOR");
 
 import WorkoutComponent from "../components/WorkoutComponent";
@@ -147,7 +149,7 @@ const HomeScreen = ({ navigation }) => {
   const createWorkoutsTable = () => {
     db.transaction((tx) => {
       tx.executeSql(
-        "CREATE TABLE IF NOT EXISTS Workouts (ID INTEGER PRIMARY KEY AUTOINCREMENT, Name STRING NOT NULL, WorkoutInfo STRING, IsLocked BOOL, LastPerformed DATE);",
+        "CREATE TABLE IF NOT EXISTS Workouts (ID INTEGER PRIMARY KEY AUTOINCREMENT, Name STRING NOT NULL, WorkoutInfo STRING, IsLocked BOOL, LastPerformed DATE, Year INTEGER);",
         null,
         null,
         (tx, error) => console.log("ERROR")
@@ -180,6 +182,20 @@ const HomeScreen = ({ navigation }) => {
     );
   };
 
+  const createVersionTable = () => {
+    db.transaction(
+      (tx) => {
+        tx.executeSql(
+          "CREATE TABLE IF NOT EXISTS Version (ID INTEGER PRIMARY KEY AUTOINCREMENT, Version INTEGER NOT NULL);",
+          null,
+          null,
+          (tx, error) => console.log("Could not make table Version", error)
+        );
+      },
+      (tx, error) => console.log("Could not make table Version", error)
+    );
+  };
+
   const resetTables = () => {
     db.transaction((tx) => tx.executeSql("DROP TABLE Workouts"));
     db.transaction((tx) => tx.executeSql("DROP TABLE Templates"));
@@ -196,6 +212,19 @@ const HomeScreen = ({ navigation }) => {
             JSON.stringify(templateWorkouts.current[i].workoutInfo),
             false, // IsLocked
           ],
+          null,
+          (tx, error) => console.log("ERROR CREATING TEMPLATE DATA", error)
+        )
+      );
+    }
+  };
+
+  const updateVersionTable = () => {
+    for (let i = 0; i < templateWorkouts.current.length; i++) {
+      db.transaction((tx) =>
+        tx.executeSql(
+          "INSERT OR IGNORE INTO Version (Version) VALUES (?,?,?);", //WHERE NOT EXISTS ( SELECT 1 FROM Templates WHERE Name = ? )",
+          [],
           null,
           (tx, error) => console.log("ERROR CREATING TEMPLATE DATA", error)
         )
@@ -224,6 +253,79 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
+  const updatePerformedLast = async () => {
+    // workoutList data loading
+    try {
+      db.transaction((tx) => {
+        tx.executeSql(
+          "UPDATE Workouts SET LastPerformed = LastPerformed || -2022",
+          null,
+          null,
+          (tx, error) => console.log("ERROR UPDATING LASTP: ", error) // error cb
+        );
+      });
+    } catch (error) {
+      console.log("ERROR UPDATING LASTP: ", error);
+    }
+  };
+
+  const addYearColumnToWorkouts = () => {
+    try {
+      db.transaction((tx) => {
+        tx.executeSql(
+          "PRAGMA table_info(Workouts)",
+          null,
+          (tx, result) => {
+            // success cb
+            // ADD YEAR COLUMN IF IT DOESNT EXIST
+            if (result.rows.length <= 5) {
+              try {
+                db.transaction((tx) => {
+                  tx.executeSql(
+                    "ALTER TABLE Workouts ADD COLUMN Year INTEGER",
+                    null,
+                    (tx, result) => {
+                      console.log("Year column added");
+                    },
+                    (tx, error) =>
+                      console.log(
+                        "ERROR ADDING YEAR COLUMN TO Workouts: ",
+                        error
+                      ) // error cb
+                  );
+                });
+              } catch (error) {
+                console.log("ERROR ADDING YEAR COLUMN TO Workouts: ", error);
+              }
+              try {
+                db.transaction((tx) => {
+                  tx.executeSql(
+                    "ALTER TABLE Prevs ADD COLUMN Year INTEGER",
+                    null,
+                    (tx, result) => {
+                      console.log("Year column added");
+                    },
+                    (tx, error) =>
+                      console.log("ERROR ADDING YEAR COLUMN TO Prevs: ", error) // error cb
+                  );
+                });
+              } catch (error) {
+                console.log("ERROR ADDING YEAR COLUMN TO Prevs: ", error);
+              }
+            }
+          },
+          (tx, error) =>
+            console.log(
+              "ERROR CHECKING WORKOUTS TABLE FOR YEAR COLUMN: ",
+              error
+            ) // error cb
+        );
+      });
+    } catch (error) {
+      console.log("ERROR CHECKING WORKOUTS TABLE FOR YEAR COLUMN: ", error);
+    }
+  };
+
   // const loadTemplateData = () => {
   //   // templateList data loading
   //   try {
@@ -246,6 +348,8 @@ const HomeScreen = ({ navigation }) => {
 
   useEffect(() => {
     // resetTables();
+    addYearColumnToWorkouts();
+    // updatePerformedLast();
     createWorkoutsTable();
     createTemplateTable();
 
