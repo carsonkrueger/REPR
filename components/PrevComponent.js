@@ -25,14 +25,28 @@ const PrevComponent = ({ info, date, index }) => {
     container: {
       flex: 1,
     },
-    dateText: {
+    dateMonthText: {
       fontSize: 25,
       // color: isIndexEven.current ? "black" : "#2494f0",
-      paddingVertical: date.month === "" ? "0%" : "3%",
+      paddingVertical: date.month === "" ? 0 : "3%",
       color: "#2494f0",
       fontFamily: "RobotoCondensedLight",
       paddingLeft: "3%",
       textAlign: "center",
+    },
+    dateYearText: {
+      fontSize: 25,
+      // color: isIndexEven.current ? "black" : "#2494f0",
+      marginTop: date.year === "" ? 0 : "5%",
+      paddingVertical: date.year === "" ? 0 : "2%",
+      display: date.year === "" ? "none" : "flex",
+      color: "#2494f0",
+      fontFamily: "RobotoCondensedLight",
+      paddingLeft: "3%",
+      textAlign: "center",
+      borderTopWidth: 1,
+      borderBottomWidth: 1,
+      borderColor: "#2494f0",
     },
     headerContainer: {
       flexDirection: "row",
@@ -98,7 +112,8 @@ const PrevComponent = ({ info, date, index }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.dateText}>{date.month}</Text>
+      <Text style={styles.dateYearText}>{date.year}</Text>
+      <Text style={styles.dateMonthText}>{date.month}</Text>
       <View style={styles.setsRow}>
         {/*empty view for day int space*/}
         <View style={styles.dayIntContainer}></View>

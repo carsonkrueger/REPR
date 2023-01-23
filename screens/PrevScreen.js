@@ -32,6 +32,7 @@ const PrevScreen = ({ navigation, route }) => {
 
   const dateList = useRef([]);
   const curMonth = useRef("null");
+  const curYear = useRef(null);
   const months = useRef([
     "JANUARY",
     "FEBRUARY",
@@ -47,15 +48,22 @@ const PrevScreen = ({ navigation, route }) => {
     "DECEMBER",
   ]);
 
-  const getDates = (lastPerformed) => {
-    const [monthInt, dayInt] = lastPerformed.split("-");
+  const getDates = (lastPerformed, yearInt) => {
+    let [monthInt, dayInt] = lastPerformed.split("-");
 
+    // check month
     if (curMonth.current !== months.current[monthInt]) {
       curMonth.current = months.current[monthInt];
-      return { month: months.current[monthInt], day: dayInt };
+      monthInt = months.current[monthInt];
+    } else {
+      monthInt = "";
     }
 
-    return { month: "", day: dayInt };
+    // check year
+    if (curYear.current !== yearInt) curYear.current = yearInt;
+    else yearInt = "";
+
+    return { month: monthInt, day: dayInt, year: yearInt };
   };
 
   const loadData = () => {
@@ -69,7 +77,7 @@ const PrevScreen = ({ navigation, route }) => {
       db.transaction((tx) =>
         tx.executeSql(
           // (ID, Name, Weights, Reps, LastPerformed)
-          "SELECT * FROM Prevs WHERE Name = ? AND ID = ? ORDER BY Year, LastPerformed DESC LIMIT ? OFFSET ?",
+          "SELECT * FROM Prevs WHERE Name = ? AND ID = ? ORDER BY Year DESC, LastPerformed DESC LIMIT ? OFFSET ?", //
           [
             route.params.originalExercise,
             route.params.WORKOUT_ID,
@@ -77,6 +85,7 @@ const PrevScreen = ({ navigation, route }) => {
             curOffset.current,
           ],
           (tx, result) => {
+            // console.log(result.rows._array);
             curOffset.current += 10;
             let tempPrevList = [];
             let tempDateList = [];
@@ -88,7 +97,12 @@ const PrevScreen = ({ navigation, route }) => {
                 // lastPerformed: result.rows.item(i).LastPerformed,
               });
 
-              tempDateList.push(getDates(result.rows.item(i).LastPerformed));
+              tempDateList.push(
+                getDates(
+                  result.rows.item(i).LastPerformed,
+                  result.rows.item(i).Year
+                )
+              );
             }
 
             if (dateList.current.length === 0) {
@@ -104,6 +118,7 @@ const PrevScreen = ({ navigation, route }) => {
               let temp = [...prevList].concat(tempPrevList);
               setPrevList(temp);
             }
+            // console.log(dateList.current);
           },
           (tx, error) => console.log("Could not load prev data", error)
         )
@@ -196,7 +211,7 @@ const PrevScreen = ({ navigation, route }) => {
         // style={styles.bottomBanner}
         bannerSize="smartBannerPortrait"
         // real ad: ca-app-pub-8357822625939612/1402507891
-        adUnitID="ca-app-pub-3940256099942544/6300978111" //"ca-app-pub-8357822625939612/1402507891" // Test ID, Replace with your-admob-unit-id
+        adUnitID="ca-app-pub-3940256099942544/6300978111" //"ca-app-pub-3940256099942544/6300978111" // Test ID, Replace with your-admob-unit-id
         servePersonalizedAds={true} // true or false
         // testID={"device"}
         onDidFailToReceiveAdWithError={(e) =>

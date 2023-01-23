@@ -149,7 +149,7 @@ const HomeScreen = ({ navigation }) => {
   const createWorkoutsTable = () => {
     db.transaction((tx) => {
       tx.executeSql(
-        "CREATE TABLE IF NOT EXISTS Workouts (ID INTEGER PRIMARY KEY AUTOINCREMENT, Name STRING NOT NULL, WorkoutInfo STRING, IsLocked BOOL, LastPerformed DATE, Year INTEGER);",
+        "CREATE TABLE IF NOT EXISTS Workouts (ID INTEGER PRIMARY KEY AUTOINCREMENT, Name STRING NOT NULL, WorkoutInfo STRING, IsLocked BOOL, LastPerformed DATE, Year INTEGER DEFAULT 2022);",
         null,
         null,
         (tx, error) => console.log("ERROR")
@@ -326,6 +326,53 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
+  const printWorkoutColumns = () => {
+    try {
+      db.transaction((tx) => {
+        tx.executeSql(
+          "PRAGMA table_info(Workouts);",
+          null,
+          (tx, result) => console.log(result.rows._array),
+          (tx, error) =>
+            console.log("ERROR Printing Workouts table columns: ", error) // error cb
+        );
+      });
+    } catch (error) {
+      console.log("ERROR Printing Workouts table columns: ", error);
+    }
+  };
+
+  const printWorkoutTableData = () => {
+    try {
+      db.transaction((tx) => {
+        tx.executeSql(
+          "SELECT * FROM Workouts;",
+          null,
+          (tx, result) => console.log(result.rows._array),
+          (tx, error) =>
+            console.log("ERROR Printing Workouts table data: ", error) // error cb
+        );
+      });
+    } catch (error) {
+      console.log("ERROR Printing Workouts table data: ", error);
+    }
+  };
+
+  const printPrevData = () => {
+    try {
+      db.transaction((tx) => {
+        tx.executeSql(
+          "SELECT * FROM Prevs;",
+          null,
+          (tx, result) => console.log(result.rows._array),
+          (tx, error) => console.log("ERROR Printing Prevs table data: ", error) // error cb
+        );
+      });
+    } catch (error) {
+      console.log("ERROR Printing Prevs table data: ", error);
+    }
+  };
+
   // const loadTemplateData = () => {
   //   // templateList data loading
   //   try {
@@ -356,6 +403,8 @@ const HomeScreen = ({ navigation }) => {
     fillTemplateTable();
     createPrevsTable();
     // printPrevData();
+    // printWorkoutColumns();
+    // printWorkoutTableData();
   }, []);
 
   useEffect(() => {

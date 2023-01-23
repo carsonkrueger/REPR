@@ -372,7 +372,7 @@ const WorkoutScreen = ({ navigation, route }) => {
       // savePrevData();
       await db.transaction(async (tx) => {
         await tx.executeSql(
-          "UPDATE Workouts SET Name = ?, WorkoutInfo = ?, IsLocked = ?, LastPerformed = ?, Year = ?, WHERE ID = ?",
+          "UPDATE Workouts SET Name = ?, WorkoutInfo = ?, IsLocked = ?, LastPerformed = ?, Year = ? WHERE ID = ?",
           [
             workoutName,
             JSON.stringify(states),
@@ -499,11 +499,20 @@ const WorkoutScreen = ({ navigation, route }) => {
   });
 
   const onBackButton = () => {
+    // e.preventDefault();
     Alert.alert(
       "Hold on!",
       "Are you sure you want to go back? All workout progress will be lost.",
-      [{ text: "Cancel" }, { text: "YES" }]
+      [
+        { text: "Cancel" },
+        {
+          text: "YES",
+          onPress: () => navigation.navigate("HomeScreen"),
+          style: "cancel",
+        },
+      ]
     );
+    return true;
   };
 
   // const handleTrash
@@ -614,7 +623,7 @@ const WorkoutScreen = ({ navigation, route }) => {
       backgroundColor: isLocked ? null : "#1e7cc9",
       paddingHorizontal: 8,
       paddingVertical: 5,
-      borderRadius: 5,
+      borderRadius: 6,
     },
     backContainer: {
       flex: 1.8,
@@ -673,6 +682,7 @@ const WorkoutScreen = ({ navigation, route }) => {
       paddingHorizontal: 20,
       borderRadius: 8,
     },
+    alertBox: {},
   });
 
   return (
