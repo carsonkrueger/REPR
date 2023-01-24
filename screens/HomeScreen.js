@@ -1,3 +1,5 @@
+// eas build --platform android // BUILD
+// eas submit -p android        // THEN SUBMIT
 import React, { useEffect, useState, useRef } from "react";
 
 import {
