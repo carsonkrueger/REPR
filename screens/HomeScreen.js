@@ -172,7 +172,7 @@ const HomeScreen = ({ navigation }) => {
     db.transaction(
       (tx) => {
         tx.executeSql(
-          "CREATE TABLE IF NOT EXISTS Prevs (ID INTEGER, Name STRING NOT NULL, Weights STRING, Reps STRING, LastPerformed DATE);",
+          "CREATE TABLE IF NOT EXISTS Prevs (ID INTEGER, Name STRING NOT NULL, Weights STRING, Reps STRING, LastPerformed DATE, Year INTEGER DEFAULT 2022);",
           null,
           null,
           (tx, error) => console.log("Could not make table Prevs", error)
@@ -253,40 +253,26 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
-  const updatePerformedLast = async () => {
-    // workoutList data loading
-    try {
-      db.transaction((tx) => {
-        tx.executeSql(
-          "UPDATE Workouts SET LastPerformed = LastPerformed || -2022",
-          null,
-          null,
-          (tx, error) => console.log("ERROR UPDATING LASTP: ", error) // error cb
-        );
-      });
-    } catch (error) {
-      console.log("ERROR UPDATING LASTP: ", error);
-    }
-  };
-
-  const addYearColumnToWorkouts = () => {
+  const updateColumnsToDatabase = () => {
     try {
       db.transaction((tx) => {
         tx.executeSql(
           "PRAGMA table_info(Workouts)",
           null,
           (tx, result) => {
-            // success cb
             // ADD YEAR COLUMN IF IT DOESNT EXIST
-            if (result.rows.length <= 5) {
+            if (result.rows.length == 5) {
+              // -------- Year ----------
               try {
+                // add Year to Workouts table
                 db.transaction((tx) => {
                   tx.executeSql(
-                    "ALTER TABLE Workouts ADD COLUMN Year INTEGER",
+                    "ALTER TABLE Workouts ADD COLUMN Year INTEGER DEFAULT 2022;",
                     null,
-                    (tx, result) => {
-                      console.log("Year column added");
-                    },
+                    // (tx, result) => {
+                    //   console.log("Year column added");
+                    // },
+                    null,
                     (tx, error) =>
                       console.log(
                         "ERROR ADDING YEAR COLUMN TO Workouts: ",
@@ -298,13 +284,15 @@ const HomeScreen = ({ navigation }) => {
                 console.log("ERROR ADDING YEAR COLUMN TO Workouts: ", error);
               }
               try {
+                // add Year to Prevs table
                 db.transaction((tx) => {
                   tx.executeSql(
-                    "ALTER TABLE Prevs ADD COLUMN Year INTEGER",
+                    "ALTER TABLE Prevs ADD COLUMN Year INTEGER DEFAULT 2022;",
                     null,
-                    (tx, result) => {
-                      console.log("Year column added");
-                    },
+                    // (tx, result) => {
+                    //   console.log("Year column added");
+                    // },
+                    null,
                     (tx, error) =>
                       console.log("ERROR ADDING YEAR COLUMN TO Prevs: ", error) // error cb
                   );
@@ -395,8 +383,8 @@ const HomeScreen = ({ navigation }) => {
 
   useEffect(() => {
     // resetTables();
-    addYearColumnToWorkouts();
-    // updatePerformedLast();
+    updateColumnsToDatabase();
+
     createWorkoutsTable();
     createTemplateTable();
 
@@ -486,7 +474,7 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
+      <StatusBar backgroundColor={"#f2f2f2"} barStyle={"dark-content"} />
 
       <ScrollView
         stickyHeaderIndices={[0, 2]}
@@ -547,7 +535,7 @@ const HomeScreen = ({ navigation }) => {
         style={styles.bottomBanner}
         bannerSize="smartBannerPortrait"
         // real ad: ca-app-pub-8357822625939612/6897489102
-        adUnitID="ca-app-pub-3940256099942544/6300978111" //"ca-app-pub-8357822625939612/6897489102" // Test ID, Replace with your-admob-unit-id
+        adUnitID="ca-app-pub-8357822625939612/6897489102" //"ca-app-pub-3940256099942544/6300978111" // Test ID, Replace with your-admob-unit-id
         servePersonalizedAds={true} // true or false
         // testID={"device"}
         onDidFailToReceiveAdWithError={(e) =>

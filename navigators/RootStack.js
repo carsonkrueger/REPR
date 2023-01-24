@@ -1,18 +1,15 @@
 import React, { useRef } from "react";
 
-import { Dimensions } from "react-native";
+// import { Dimensions } from "react-native";
 
-import {
-  NavigationContainer,
-  cardStyleInterpolator,
-} from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import Animated, {
-  useSharedValue,
-  withTiming,
-  useAnimatedStyle,
-} from "react-native-reanimated";
+// import Animated, {
+//   useSharedValue,
+//   withTiming,
+//   useAnimatedStyle,
+// } from "react-native-reanimated";
 
 import HomeScreen from "../screens/HomeScreen";
 import WorkoutScreen from "../screens/WorkoutScreen";
@@ -21,7 +18,7 @@ import PrevScreen from "../screens/PrevScreen";
 const Stack = createNativeStackNavigator();
 
 const RootStack = () => {
-  const windowHeight = useRef(Dimensions.get("window").height);
+  // const windowHeight = useRef(Dimensions.get("window").height);
 
   return (
     <NavigationContainer>

@@ -54,6 +54,8 @@ const WorkoutScreen = ({ navigation, route }) => {
   // const scheduledNotication = useRef();
 
   // const appState = useRef(AppState.currentState);
+  // console.log(routeHook.name);
+
   const [workoutName, setWorkoutName] = useState("");
   const [states, setStates] = useState([]);
   // const [doSearch, setDoSearch] = useState([]);
@@ -500,22 +502,22 @@ const WorkoutScreen = ({ navigation, route }) => {
 
   const onBackButton = () => {
     // e.preventDefault();
-    Alert.alert(
-      "Hold on!",
-      "Are you sure you want to go back? All workout progress will be lost.",
-      [
-        { text: "Cancel" },
-        {
-          text: "YES",
-          onPress: () => navigation.navigate("HomeScreen"),
-          style: "cancel",
-        },
-      ]
-    );
+    // console.log(navigation);
+    // Alert.alert(
+    //   "Hold on!",
+    //   "Are you sure you want to go back? All workout progress will be lost.",
+    //   [
+    //     { text: "Cancel" },
+    //     {
+    //       text: "YES",
+    //       onPress: () => navigation.navigate("HomeScreen"),
+    //       style: "cancel",
+    //     },
+    //   ]
+    // );
+
     return true;
   };
-
-  // const handleTrash
 
   useEffect(() => {
     handleLockAnim();
@@ -599,7 +601,7 @@ const WorkoutScreen = ({ navigation, route }) => {
       // justifyContent: "center",
     },
     screenHeader: {
-      maxWidth: 500,
+      maxWidth: 600,
       flex: 1,
       marginTop: "5%",
       marginBottom: "3%",
@@ -658,7 +660,7 @@ const WorkoutScreen = ({ navigation, route }) => {
       alignItems: "center",
       justifyContent: "center",
       marginVertical: "7%",
-      marginHorizontal: "24%",
+      marginHorizontal: "28%",
       backgroundColor: "#43a2f0",
       height: 35,
       borderRadius: 30,
@@ -682,7 +684,6 @@ const WorkoutScreen = ({ navigation, route }) => {
       paddingHorizontal: 20,
       borderRadius: 8,
     },
-    alertBox: {},
   });
 
   return (
@@ -782,7 +783,7 @@ const WorkoutScreen = ({ navigation, route }) => {
         // style={styles.bottomBanner}
         bannerSize="smartBannerPortrait"
         // real ad: ca-app-pub-8357822625939612/5770780706
-        adUnitID="ca-app-pub-3940256099942544/6300978111" //"ca-app-pub-8357822625939612/5770780706" // Test ID, Replace with your-admob-unit-id
+        adUnitID="ca-app-pub-8357822625939612/5770780706" //"ca-app-pub-3940256099942544/6300978111" // Test ID, Replace with your-admob-unit-id
         servePersonalizedAds={true} // true or false
         // testID={"device"}
         onDidFailToReceiveAdWithError={(e) =>

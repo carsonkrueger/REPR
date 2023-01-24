@@ -61,6 +61,10 @@ const PrevScreen = ({ navigation, route }) => {
 
     // check year
     if (curYear.current !== yearInt) curYear.current = yearInt;
+    // else if (curYear.current == null) {
+    //   yearInt = 2022;
+    //   curYear.current = yearInt;
+    // }
     else yearInt = "";
 
     return { month: monthInt, day: dayInt, year: yearInt };
@@ -77,7 +81,8 @@ const PrevScreen = ({ navigation, route }) => {
       db.transaction((tx) =>
         tx.executeSql(
           // (ID, Name, Weights, Reps, LastPerformed)
-          "SELECT * FROM Prevs WHERE Name = ? AND ID = ? ORDER BY Year DESC, LastPerformed DESC LIMIT ? OFFSET ?", //
+          // "SELECT * FROM Prevs WHERE Name = ? AND ID = ? ORDER BY Year DESC, LastPerformed DESC LIMIT ? OFFSET ?", //
+          "SELECT *, TRIM(substr(LastPerformed, instr(LastPerformed,'-')+1)) AS month, TRIM(substr(LastPerformed, 1, instr(LastPerformed,'-')-1)) AS day from Prevs WHERE Name = ? AND ID = ? ORDER BY Year DESC, month DESC, day DESC LIMIT ? OFFSET ?;",
           [
             route.params.originalExercise,
             route.params.WORKOUT_ID,
@@ -211,7 +216,7 @@ const PrevScreen = ({ navigation, route }) => {
         // style={styles.bottomBanner}
         bannerSize="smartBannerPortrait"
         // real ad: ca-app-pub-8357822625939612/1402507891
-        adUnitID="ca-app-pub-3940256099942544/6300978111" //"ca-app-pub-3940256099942544/6300978111" // Test ID, Replace with your-admob-unit-id
+        adUnitID="ca-app-pub-8357822625939612/1402507891" //"ca-app-pub-3940256099942544/6300978111" // Test ID, Replace with your-admob-unit-id
         servePersonalizedAds={true} // true or false
         // testID={"device"}
         onDidFailToReceiveAdWithError={(e) =>
