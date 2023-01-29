@@ -239,7 +239,7 @@ const HomeScreen = ({ navigation }) => {
     try {
       db.transaction((tx) => {
         tx.executeSql(
-          "SELECT ID, Name, WorkoutInfo, LastPerformed FROM Workouts ORDER BY LastPerformed DESC",
+          "SELECT ID, Name, WorkoutInfo, LastPerformed, Year, TRIM(substr(LastPerformed, instr(LastPerformed,'-')+1)) AS month, TRIM(substr(LastPerformed, 1, instr(LastPerformed,'-')-1)) AS day FROM Workouts ORDER BY Year DESC, month DESC, day DESC",
           null,
           (tx, result) => {
             let tempExer = [];
@@ -476,7 +476,7 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={"#f2f2f2"} barStyle={"dark-content"} />
+      <StatusBar backgroundColor={"#2494f0"} barStyle={"dark-content"} />
 
       <ScrollView
         stickyHeaderIndices={[0, 2]}
